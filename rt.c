@@ -18,6 +18,7 @@
 #include "triangle.h"
 #include "procedural.h"
 #include "render_struct.h"
+#include "render_pixel.h"
 #include "perlin.h"
 #include "vec3.h"
 
@@ -261,107 +262,7 @@ static void render_distances(struct rgb_image *image, struct scene *scene,
         = {depth_intensity, depth_intensity, depth_intensity};
     rgb_image_set(image, x, y, pix_color);
 }
-void *render_line_th(void *rend_void)
-{
-    struct render_struct *rend = rend_void;
-    size_t maxx = rend->maxx;
-    size_t starty = rend->starty;
-    struct rgb_image *image = rend->image;
-    struct scene *scene = rend->scene;
-    render_mode_f renderer = rend->renderer;
-    for (size_t x = 0; x < maxx; x++)
-    {
-        renderer(image, scene, x, starty);
-    }
-    printf("rendering: %li/%li\n", starty, maxx);
-    free(rend_void);
-    pthread_exit(NULL);
-}
-void *render_line(void *rend_void)
-{
-    struct render_struct *rend = rend_void;
-    size_t maxx = rend->maxx;
-    size_t starty = rend->starty;
-    struct rgb_image *image = rend->image;
-    struct scene *scene = rend->scene;
-    render_mode_f renderer = rend->renderer;
-    for (size_t x = 0; x < maxx; x++)
-    {
-        renderer(image, scene, x, starty);
-    }
-    printf("rendering: %li/%li\n", starty, maxx);
-}
-void join_all(pthread_t *th, int size)
-{
-            for(int j = 0; j < size; j++)
-                pthread_join(th[j],NULL);
-}
 
-void render_pixel(void *rend_void)
-{
-    struct render_struct *rend = rend_void;
-    // render all pixels
-    size_t starty = 0;
-    size_t maxy = rend->maxy;
-    int i = 0;
-    for (size_t y = 0; y < maxy; y++)
-    {
-        render_line(rend_void);
-        rend->starty++;
-        i++;
-    }
-}
-
-void render_pixel_th(void *rend_void)
-{
-    struct render_struct *rend = rend_void;
-    struct rgb_image *image = rend->image;
-    struct scene *scene = rend->scene;
-    render_mode_f renderer = rend->renderer;
-    size_t maxy = rend->maxy;
-    free(rend);
-    rend_void = alloc_render_struct(renderer, image, scene, 0, 0, image->height, image->width);
-    // render all pixels
-    int numth = 4;
-    pthread_t th[numth];
-    size_t starty = 0;
-    int i = 0;
-    for (size_t y = 0; y < maxy; y++)
-    {
-        if(i > numth)
-        {
-            join_all(th, numth);
-            i = 0;
-        }
-        pthread_create(&th[i], NULL, render_line_th, rend_void);
-        if(y != maxy -1)
-        rend_void = alloc_render_struct(renderer, image, scene, 0, y, image->height, image->width);
-        printf("%li\n",y);
-        i++;
-    }
-    if(i > numth)
-        join_all(th, numth);
-    else
-        join_all(th, i);
-}
-void render_all_pixel(render_mode_f renderer, struct rgb_image *image, struct scene *scene, int th)
-{
-    init_perlin();
-            struct render_struct *rend = 0;
-            rend = alloc_render_struct(renderer, image, scene, 0, 0, image->height, image->width);
-            if(th)
-                render_pixel_th(rend);
-            else
-                render_pixel(rend);
-
-
-}
-void time_end(clock_t begin)
-{
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("time_spent: %f\n",time_spent);
-}
 int main(int argc, char *argv[])
 {
     int rc;
@@ -398,7 +299,6 @@ int main(int argc, char *argv[])
 
     // parse options
     int th = 0;
-    int bench = 0;
     render_mode_f renderer = render_shaded;
     for (int i = 3; i < argc; i++)
     {
@@ -410,27 +310,9 @@ int main(int argc, char *argv[])
             renderer = render_procedural;
         else if(strcmp(argv[i], "--th") == 0)
             th = 1;
-        else if(strcmp(argv[i], "--bench") == 0)
-            bench = 1;
 
     }
-    clock_t begin = clock();
-    if(bench)
-    {
-        render_all_pixel(renderer, image, &scene,0);
-        printf("No thread:\n");
-        time_end(begin);
-        begin = clock();
-        printf("With thread:\n");
-        render_all_pixel(renderer, image, &scene,1);
-        time_end(begin);
-
-    }
-    else
-    {
-        render_all_pixel(renderer, image, &scene,th);
-        time_end(begin);
-    }
+    render_all_pixel(renderer, image, &scene,th);
 
    // write the rendered image to a bmp file
     FILE *fp = fopen(argv[2], "w");
