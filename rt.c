@@ -318,11 +318,13 @@ void render_pixel_th(void *rend_void)
     struct rgb_image *image = rend->image;
     struct scene *scene = rend->scene;
     render_mode_f renderer = rend->renderer;
+    size_t maxy = rend->maxy;
+    free(rend);
+    rend_void = alloc_render_struct(renderer, image, scene, 0, 0, image->height, image->width);
     // render all pixels
     int numth = 4;
     pthread_t th[numth];
     size_t starty = 0;
-    size_t maxy = rend->maxy;
     int i = 0;
     for (size_t y = 0; y < maxy; y++)
     {
@@ -332,6 +334,7 @@ void render_pixel_th(void *rend_void)
             i = 0;
         }
         pthread_create(&th[i], NULL, render_line_th, rend_void);
+        if(y != maxy -1)
         rend_void = alloc_render_struct(renderer, image, scene, 0, y, image->height, image->width);
         printf("%li\n",y);
         i++;
