@@ -1,0 +1,7 @@
+*.o
+*.d
+/rt
+\#*\#
+*~
+*.bmp
+.clang_complete
