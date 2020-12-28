@@ -15,14 +15,33 @@ struct vec3 procedural_texture(struct vec3 point, struct vec3 normal)
 
 struct vec3 perlin_texture(struct vec3 point, struct vec3 normal)
 {
+    //size of the pattern
+    double freq = 9.0;
+    //bluriness of the pattern
+    double depth = 5.0;
     struct vec3 res;
-    double noise1 = noise3(point.x, point.y,point.z);
-    double noise2 = noise3(point.y, point.z,point.x);
-    double noise4 = noise3(point.z, point.x,point.y);
+    double noise1 = noise3d(point.x, point.y,point.z,freq,depth);
+    if(noise1> 1.0)
+    printf("%f\n",noise1);
     res.x =noise1;
-    res.y = noise2;
-    res.z =noise4;
+    res.y = noise1;
+    res.z =noise1;
     return res;
+}
+struct vec3 perlin_texture2(struct vec3 point, struct vec3 normal)
+{
+    struct vec3 res;
+    double a = 0.5;
+    double b = 9.0;
+    double noise1 = Perlin_Get3d(point.x, point.y,point.z,a,b);
+    double noise2 = Perlin_Get3d(normal.x, normal.y,normal.z,a,b);
+    if(noise1 > 1.0 && noise2 > 1.0)
+        printf("%f %f\n",noise1, noise2);
+    res.x =(noise1+noise2)/2.0;
+    res.y = (noise1+noise2)/2.0;
+    res.z =(noise1+noise2)/2.0;
+    return res;
+
 }
 double fbm(struct vec3 x, double H)
 {    

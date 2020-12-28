@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-static int  SEED = 1982;
+static int  SEED = 1985;
 
 static const unsigned char  HASH[] = {
     208,34,231,213,32,248,233,56,161,78,24,140,71,48,140,254,245,255,247,247,40,
@@ -23,8 +23,9 @@ static const unsigned char  HASH[] = {
 void init_perlin(void)
 {
 	srand(time(NULL));
-	SEED = rand();
+	//SEED = rand();
 }
+
 int noise2(int x, int y)
 {
     int  yindex = ((y + SEED)) % 256;
@@ -49,8 +50,8 @@ static double smooth_inter(double x, double y, double s)
 
 double noise2d(double x, double y)
 {
-    const int  x_int = floor( x );
-    const int  y_int = floor( y );
+    const int  x_int = (int)floor(x);
+    const int  y_int = (int)floor(y);
     const double  x_frac = x - x_int;
     const double  y_frac = y - y_int;
     const int  s = noise2( x_int, y_int );
@@ -79,6 +80,19 @@ double Perlin_Get2d(double x, double y, double freq, int depth)
         ya *= 2;
     }
     return fin/div;
+}
+
+double Perlin_Get3d(double x, double y, double z, double freq, int depth)
+{
+    double ab = Perlin_Get2d(x,y,freq,depth);
+    double bc = Perlin_Get2d(y,z,freq,depth);
+    double ac = Perlin_Get2d(x,z,freq,depth);
+
+    double ba = Perlin_Get2d(y,x,freq,depth);
+    double cb = Perlin_Get2d(z,y,freq,depth);
+    double ca = Perlin_Get2d(z,x,freq,depth);
+    double abc = ab + bc + ac + ba + cb + ca;
+    return abc / 6.0;
 }
 
 #define FADE(t) ( t * t * t * ( t * ( t * 6 - 15 ) + 10 ) )
@@ -113,35 +127,42 @@ unsigned char perm[] = {151,160,137,91,90,15,
   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 };
 
-float grad3( int hash, float x, float y , float z ) {
+double grad3( int hash, double x, double y , double z ) {
     int h = hash & 15;     // Convert low 4 bits of hash code into 12 simple
-    float u = h<8 ? x : y; // gradient directions, and compute dot product.
-    float v = h<4 ? y : h==12||h==14 ? x : z; // Fix repeats at h = 12 to 15
+    double u = h<8 ? x : y; // gradient directions, and compute dot product.
+    double v = h<4 ? y : h==12||h==14 ? x : z; // Fix repeats at h = 12 to 15
     return ((h&1)? -u : u) + ((h&2)? -v : v);
 }
+double grad1( int hash, double x, double y , double z ) {
+    int a = hash ^ (int)x;
+    int b = hash ^ (int)y;
+    int c = hash ^ (int)z;
 
-float noise3( float x, float y, float z )
+    return sin(a+b+c);
+}
+
+double noise3( double x, double y, double z )
 {
     int ix0, iy0, ix1, iy1, iz0, iz1;
-    float fx0, fy0, fz0, fx1, fy1, fz1;
-    float s, t, r;
-    float nxy0, nxy1, nx0, nx1, n0, n1;
+    double fx0, fy0, fz0, fx1, fy1, fz1;
+    double s, t, r;
+    double nxy0, nxy1, nx0, nx1, n0, n1;
 
-    ix0 = FASTFLOOR( x ); // Integer part of x
-    iy0 = FASTFLOOR( y ); // Integer part of y
-    iz0 = FASTFLOOR( z ); // Integer part of z
+    ix0 = FASTFLOOR( x ) ; // Integer part of x
+    iy0 = FASTFLOOR( y ) ; // Integer part of y
+    iz0 = FASTFLOOR( z ) ; // Integer part of z
     fx0 = x - ix0;        // Fractional part of x
     fy0 = y - iy0;        // Fractional part of y
     fz0 = z - iz0;        // Fractional part of z
-    fx1 = fx0 - 1.0f;
-    fy1 = fy0 - 1.0f;
-    fz1 = fz0 - 1.0f;
-    ix1 = ( ix0 + 1 ) & 0xff; // Wrap to 0..255
-    iy1 = ( iy0 + 1 ) & 0xff;
-    iz1 = ( iz0 + 1 ) & 0xff;
-    ix0 = ix0 & 0xff;
-    iy0 = iy0 & 0xff;
-    iz0 = iz0 & 0xff;
+    fx1 = fx0 - 1.0;
+    fy1 = fy0 - 1.0;
+    fz1 = fz0 - 1.0;
+    ix1 = ( ix0 + 1 ) & 255;
+    iy1 = ( iy0 + 1 ) & 255;
+    iz1 = ( iz0 + 1 ) & 255;
+    ix0 = (ix0 % 255)& 255;
+    iy0 = (iy0 % 255)& 255;
+    iz0 = (iz0 % 255)& 255;
     
     r = FADE( fz0 );
     t = FADE( fy0 );
@@ -167,6 +188,27 @@ float noise3( float x, float y, float z )
 
     n1 = LERP( t, nx0, nx1 );
     
-    return 0.936f * ( LERP( s, n0, n1 ) );
+    return 0.936 * ( LERP( s, n0, n1 ) );
+}
+
+
+double noise3d(double x, double y,double z, double freq, int depth)
+{
+    double  xa = x*freq;
+    double  ya = y*freq;
+    double  za = z*freq;
+    double  amp = 1.0;
+    double  fin = 0;
+    double  div = 0.0;
+    for (int i=0; i<depth; i++)
+    {
+        div += amp;
+        fin += noise3( xa, ya, za ) * amp;
+        amp /= 3;
+        xa *= 3;
+        ya *= 3;
+        za *= 3;
+    }
+    return fin/div;
 }
 
