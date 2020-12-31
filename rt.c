@@ -1,11 +1,11 @@
 #include <err.h>
 #include <math.h>
+#include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <pthread.h>
 
 #include "bmp.h"
 #include "camera.h"
@@ -13,16 +13,16 @@
 #include "normal_material.h"
 #include "obj_loader.h"
 #include "phong_material.h"
+#include "procedural.h"
 #include "scene.h"
 #include "sphere.h"
 #include "triangle.h"
-#include "procedural.h"
 #include "vec3.h"
 
-#include "render_struct.h"
-#include "render_pixel.h"
-#include "render_mode.h"
 #include "perlin.h"
+#include "render_mode.h"
+#include "render_pixel.h"
+#include "render_struct.h"
 static void build_test_scene(struct scene *scene, double aspect_ratio)
 {
     // create a sample red material
@@ -67,11 +67,11 @@ static void build_test_scene(struct scene *scene, double aspect_ratio)
 
     scene->camera = (struct camera){
         .center = {0, 0, 0},
-            .forward = {0, 1, 0},
-            .up = {0, 0, 1},
-            .width = cam_width,
-            .height = cam_height,
-            .focal_distance = focal_distance_from_fov(cam_width, 80),
+        .forward = {0, 1, 0},
+        .up = {0, 0, 1},
+        .width = cam_width,
+        .height = cam_height,
+        .focal_distance = focal_distance_from_fov(cam_width, 80),
     };
 
     // release the reference to the material
@@ -94,11 +94,11 @@ static void build_obj_scene(struct scene *scene, double aspect_ratio)
     // with its up on y
     scene->camera = (struct camera){
         .center = {0, 1, 2},
-            .forward = {0, -1, -2},
-            .up = {0, 1, 0},
-            .width = cam_width,
-            .height = cam_height,
-            .focal_distance = focal_distance_from_fov(cam_width, 40),
+        .forward = {0, -1, -2},
+        .up = {0, 1, 0},
+        .width = cam_width,
+        .height = cam_height,
+        .focal_distance = focal_distance_from_fov(cam_width, 40),
     };
 
     vec3_normalize(&scene->camera.forward);
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     double aspect_ratio = (double)image->width / image->height;
 
     // build the scene
-    if(!strcmp(argv[1], "test.obj"))
+    if (!strcmp(argv[1], "test.obj"))
     {
         build_test_scene(&scene, aspect_ratio);
     }
@@ -135,7 +135,6 @@ int main(int argc, char *argv[])
 
         if (load_obj(&scene, argv[1]))
             return 41;
-
     }
 
     // parse options
@@ -149,13 +148,12 @@ int main(int argc, char *argv[])
             renderer = render_distances;
         else if (strcmp(argv[i], "--procedural") == 0)
             renderer = render_procedural;
-        else if(strcmp(argv[i], "--th") == 0)
+        else if (strcmp(argv[i], "--th") == 0)
             th = 1;
-
     }
-    render_all_pixel(renderer, image, &scene,th);
+    render_all_pixel(renderer, image, &scene, th);
 
-   // write the rendered image to a bmp file
+    // write the rendered image to a bmp file
     FILE *fp = fopen(argv[2], "w");
     if (fp == NULL)
         err(1, "failed to open the output file");
@@ -168,4 +166,3 @@ int main(int argc, char *argv[])
     free(image);
     return rc;
 }
-

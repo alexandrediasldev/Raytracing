@@ -1,8 +1,8 @@
 #pragma once
-#include <err.h>
-#include <errno.h>
 #include "camera.h"
 #include "object.h"
+#include <err.h>
+#include <errno.h>
 
 #include "utils/pvect.h"
 

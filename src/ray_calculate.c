@@ -1,6 +1,6 @@
 #include "ray_calculate.h"
 struct ray image_cast_ray(const struct rgb_image *image,
-        const struct scene *scene, size_t x, size_t y)
+                          const struct scene *scene, size_t x, size_t y)
 {
     // find the position of the current pixel in the image plane
     // camera_cast_ray takes camera relative positions, from -0.5 to 0.5 for
@@ -14,9 +14,8 @@ struct ray image_cast_ray(const struct rgb_image *image,
     return ray;
 }
 
-double
-scene_intersect_ray(struct object_intersection *closest_intersection,
-        struct scene *scene, struct ray *ray)
+double scene_intersect_ray(struct object_intersection *closest_intersection,
+                           struct scene *scene, struct ray *ray)
 {
     // we will now try to find the closest object in the scene
     // intersecting this ray
@@ -37,5 +36,3 @@ scene_intersect_ray(struct object_intersection *closest_intersection,
 
     return closest_intersection_dist;
 }
-
-

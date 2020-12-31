@@ -4,8 +4,8 @@
  ** intersecting the camera ray. If an object is found, shade the pixel to
  ** find its color.
  */
-void render_shaded(struct rgb_image *image, struct scene *scene,
-        size_t x, size_t y)
+void render_shaded(struct rgb_image *image, struct scene *scene, size_t x,
+                   size_t y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -27,8 +27,8 @@ void render_shaded(struct rgb_image *image, struct scene *scene,
  ** intersecting the camera ray. If an object is found, shade the pixel to
  ** find its color.
  */
-void render_normals(struct rgb_image *image, struct scene *scene,
-        size_t x, size_t y)
+void render_normals(struct rgb_image *image, struct scene *scene, size_t x,
+                    size_t y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -42,11 +42,11 @@ void render_normals(struct rgb_image *image, struct scene *scene,
 
     struct material *mat = closest_intersection.material;
     struct vec3 pix_color = normal_material.shade(
-            mat, &closest_intersection.location, scene, &ray);
+        mat, &closest_intersection.location, scene, &ray);
     rgb_image_set(image, x, y, rgb_color_from_light(&pix_color));
 }
-void render_procedural(struct rgb_image *image, struct scene *scene,
-        size_t x, size_t y)
+void render_procedural(struct rgb_image *image, struct scene *scene, size_t x,
+                       size_t y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -59,19 +59,18 @@ void render_procedural(struct rgb_image *image, struct scene *scene,
         return;
 
     struct material *mat = closest_intersection.material;
-    struct vec3 pix_color = procedural_shader(
-            mat, &closest_intersection.location, scene, &ray);
+    struct vec3 pix_color
+        = procedural_shader(mat, &closest_intersection.location, scene, &ray);
 
     rgb_image_set(image, x, y, rgb_color_from_light(&pix_color));
 }
-
 
 /* For all the pixels of the image, try to find the closest object
  ** intersecting the camera ray. If an object is found, shade the pixel to
  ** find its color.
  */
-void render_distances(struct rgb_image *image, struct scene *scene,
-        size_t x, size_t y)
+void render_distances(struct rgb_image *image, struct scene *scene, size_t x,
+                      size_t y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -91,5 +90,3 @@ void render_distances(struct rgb_image *image, struct scene *scene,
         = {depth_intensity, depth_intensity, depth_intensity};
     rgb_image_set(image, x, y, pix_color);
 }
-
-

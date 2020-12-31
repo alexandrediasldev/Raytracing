@@ -27,5 +27,3 @@ struct rgb_pixel rgb_color_from_light(const struct vec3 *light)
     res.b = translate_light_component(light->z);
     return res;
 }
-
-
