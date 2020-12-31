@@ -11,8 +11,8 @@ struct perlin_info *alloc_perlin_info(double freq, double depth, int abs)
     p->abs = abs;
     return p;
 }
-struct vec3 perlin_texture(struct vec3 point, struct vec3 normal,
-                           struct perlin_info p)
+struct vec3 perlin_texture1(struct vec3 point, struct vec3 normal,
+                            struct perlin_info p)
 {
     struct vec3 res;
     double noise1 = noise3d(point.x, point.y, point.z, p.freq, p.depth);
@@ -75,14 +75,39 @@ struct vec3 perlin_texture3(struct vec3 point, struct vec3 normal,
     res.z = noise_c;
     return res;
 }
-struct vec3 procedural_shader(const struct material *base_material,
-                              const struct intersection *inter,
-                              const struct scene *scene, const struct ray *ray)
+struct vec3 perlin_shader1(const struct material *base_material,
+                           const struct intersection *inter,
+                           const struct scene *scene, const struct ray *ray)
 {
     (void)base_material;
     (void)scene;
     (void)ray;
-    struct perlin_info *p = alloc_perlin_info(1.0, 1.0, 1);
+    struct perlin_info *p = alloc_perlin_info(4.0, 5.0, 0);
+    struct vec3 perlin = perlin_texture1(inter->point, inter->normal, *p);
+    free(p);
+    return perlin;
+}
+struct vec3 perlin_shader2(const struct material *base_material,
+                           const struct intersection *inter,
+                           const struct scene *scene, const struct ray *ray)
+{
+    (void)base_material;
+    (void)scene;
+    (void)ray;
+    struct perlin_info *p = alloc_perlin_info(5.0, 2.0, 1);
+    struct vec3 perlin = perlin_texture2(inter->point, inter->normal, *p);
+    free(p);
+    return perlin;
+}
+
+struct vec3 perlin_shader3(const struct material *base_material,
+                           const struct intersection *inter,
+                           const struct scene *scene, const struct ray *ray)
+{
+    (void)base_material;
+    (void)scene;
+    (void)ray;
+    struct perlin_info *p = alloc_perlin_info(3.0, 2.0, 1);
     struct vec3 perlin = perlin_texture3(inter->point, inter->normal, *p);
     free(p);
     return perlin;

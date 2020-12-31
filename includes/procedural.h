@@ -11,6 +11,14 @@ struct perlin_info
     // absolute perlin noise or not
     int abs;
 };
-struct vec3 procedural_shader(const struct material *base_material,
-                              const struct intersection *inter,
-                              const struct scene *scene, const struct ray *ray);
+struct vec3 perlin_shader1(const struct material *base_material,
+                           const struct intersection *inter,
+                           const struct scene *scene, const struct ray *ray);
+
+struct vec3 perlin_shader2(const struct material *base_material,
+                           const struct intersection *inter,
+                           const struct scene *scene, const struct ray *ray);
+
+struct vec3 perlin_shader3(const struct material *base_material,
+                           const struct intersection *inter,
+                           const struct scene *scene, const struct ray *ray);

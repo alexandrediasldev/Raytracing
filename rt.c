@@ -146,8 +146,12 @@ int main(int argc, char *argv[])
             renderer = render_normals;
         else if (strcmp(argv[i], "--distances") == 0)
             renderer = render_distances;
-        else if (strcmp(argv[i], "--procedural") == 0)
-            renderer = render_procedural;
+        else if (strcmp(argv[i], "--perlin1") == 0)
+            renderer = render_perlin1;
+        else if (strcmp(argv[i], "--perlin2") == 0)
+            renderer = render_perlin2;
+        else if (strcmp(argv[i], "--perlin3") == 0)
+            renderer = render_perlin3;
         else if (strcmp(argv[i], "--th") == 0)
             th = 1;
     }
