@@ -39,7 +39,6 @@ void render_pixel(void *rend_void)
 {
     struct render_struct *rend = rend_void;
     // render all pixels
-    size_t starty = 0;
     size_t maxy = rend->maxy;
     int i = 0;
     for (size_t y = 0; y < maxy; y++)
@@ -83,7 +82,6 @@ void render_pixel_th(void *rend_void)
 void render_all_pixel(render_mode_f renderer, struct rgb_image *image,
                       struct scene *scene, int th)
 {
-    init_perlin();
     struct render_struct *rend = 0;
     rend = alloc_render_struct(renderer, image, scene, 0, 0, image->height,
                                image->width);
