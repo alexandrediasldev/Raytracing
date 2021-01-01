@@ -1,12 +1,12 @@
 #include "ray_calculate.h"
 struct ray image_cast_ray(const struct rgb_image *image,
-                          const struct scene *scene, size_t x, size_t y)
+                          const struct scene *scene, double x, double y)
 {
     // find the position of the current pixel in the image plane
     // camera_cast_ray takes camera relative positions, from -0.5 to 0.5 for
     // both axis
-    double cam_x = ((double)x / image->width) - 0.5;
-    double cam_y = ((double)y / image->height) - 0.5;
+    double cam_x = (x / image->width) - 0.5;
+    double cam_y = (y / image->height) - 0.5;
 
     // find the starting point and direction of this ray
     struct ray ray;
