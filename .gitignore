@@ -1,3 +1,4 @@
+.pre-commit*
 *.o
 *.d
 /rt
