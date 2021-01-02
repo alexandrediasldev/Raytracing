@@ -138,7 +138,6 @@ int main(int argc, char *argv[])
     }
 
     // parse options
-    int th = 0;
     render_mode_f renderer = render_shaded;
     for (int i = 3; i < argc; i++)
     {
@@ -153,9 +152,11 @@ int main(int argc, char *argv[])
         else if (strcmp(argv[i], "--perlin3") == 0)
             renderer = render_perlin3;
         else if (strcmp(argv[i], "--th") == 0)
-            th = 1;
+            scene.threading = 1;
+        else if (strcmp(argv[i], "--alliasing") == 0)
+            scene.anti_alliasing = 1;
     }
-    render_all_pixel(renderer, image, &scene, th);
+    render_all_pixel(renderer, image, &scene);
 
     // write the rendered image to a bmp file
     FILE *fp = fopen(argv[2], "w");

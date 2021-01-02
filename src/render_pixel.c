@@ -80,12 +80,12 @@ void render_pixel_th(void *rend_void)
     join_all(th, i);
 }
 void render_all_pixel(render_mode_f renderer, struct rgb_image *image,
-                      struct scene *scene, int th)
+                      struct scene *scene)
 {
     struct render_struct *rend = 0;
     rend = alloc_render_struct(renderer, image, scene, 0, 0, image->height,
                                image->width);
-    if (th)
+    if (scene->threading)
         render_pixel_th(rend);
     else
         render_pixel(rend);

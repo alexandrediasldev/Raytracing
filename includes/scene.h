@@ -28,6 +28,8 @@ struct scene
     struct vec3 light_color;
     struct vec3 light_direction;
     double light_intensity;
+    int threading;
+    int anti_alliasing;
 
     struct camera camera;
 };
@@ -35,6 +37,8 @@ struct scene
 static inline void scene_init(struct scene *scene)
 {
     object_vect_init(&scene->objects, 42);
+    scene->threading = 0;
+    scene->anti_alliasing = 0;
 }
 
 void scene_destroy(struct scene *scene);
