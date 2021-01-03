@@ -174,23 +174,3 @@ double noise3(double x, double y, double z)
     // magic number for rescalling in 3d
     return (0.936 * (lerp(s, n0, n1)));
 }
-
-double noise3d(double x, double y, double z, double freq, int depth)
-{
-    double xa = x * freq;
-    double ya = y * freq;
-    double za = z * freq;
-    double amp = 1.0;
-    double fin = 0;
-    double div = 0.0;
-    for (int i = 0; i < depth; i++)
-    {
-        div += amp;
-        fin += noise3(xa, ya, za) * amp;
-        amp /= 3;
-        xa *= 3;
-        ya *= 3;
-        za *= 3;
-    }
-    return fin / div;
-}

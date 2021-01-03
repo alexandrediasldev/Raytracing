@@ -1,5 +1,15 @@
 #include "render_pixel.h"
 
+// number of thread
+#define NUMTH 16
+/**
+** Join all the thread of an array, up to the number siz
+**/
+void join_all(pthread_t *th, int size)
+{
+    for (int j = 0; j < size; j++)
+        pthread_join(th[j], NULL);
+}
 void *render_line_th(void *rend_void)
 {
     struct render_struct *rend = rend_void;
@@ -30,12 +40,8 @@ void *render_line(void *rend_void)
     }
     // printf("rendering: %li/%li\n", starty, maxx);
 }
-void join_all(pthread_t *th, int size)
-{
-    for (int j = 0; j < size; j++)
-        pthread_join(th[j], NULL);
-}
-void render_pixel(void *rend_void)
+
+void render_image(void *rend_void)
 {
     struct render_struct *rend = rend_void;
     // render all pixels
@@ -49,7 +55,7 @@ void render_pixel(void *rend_void)
     }
 }
 
-void render_pixel_th(void *rend_void)
+void render_image_th(void *rend_void)
 {
     struct render_struct *rend = rend_void;
     struct rgb_image *image = rend->image;
@@ -60,8 +66,7 @@ void render_pixel_th(void *rend_void)
     rend_void = alloc_render_struct(renderer, image, scene, 0, 0, image->height,
                                     image->width);
     // render all pixels
-    int numth = 16;
-    pthread_t th[numth];
+    pthread_t th[NUMTH];
     int i = 0;
     for (size_t y = 0; y < maxy; y++)
     {
@@ -71,9 +76,9 @@ void render_pixel_th(void *rend_void)
                                             image->height, image->width);
         // printf("%li\n",y);
         i++;
-        if (i > numth)
+        if (i > NUMTH)
         {
-            join_all(th, numth);
+            join_all(th, NUMTH);
             i = 0;
         }
     }
@@ -86,7 +91,7 @@ void render_all_pixel(render_mode_f renderer, struct rgb_image *image,
     rend = alloc_render_struct(renderer, image, scene, 0, 0, image->height,
                                image->width);
     if (scene->threading)
-        render_pixel_th(rend);
+        render_image_th(rend);
     else
-        render_pixel(rend);
+        render_image(rend);
 }

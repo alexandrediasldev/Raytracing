@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 
     // initialize the frame buffer (the buffer that will store the result of the
     // rendering)
-    struct rgb_image *image = rgb_image_alloc(500, 500);
+    struct rgb_image *image = rgb_image_alloc(800, 800);
 
     // set all the pixels of the image to black
     struct rgb_pixel bg_color = {0};
@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
 
     // parse options
     render_mode_f renderer = render_shaded;
+    noise_f *noise_function = fbm3d;
     for (int i = 3; i < argc; i++)
     {
         if (strcmp(argv[i], "--normals") == 0)
@@ -151,10 +152,14 @@ int main(int argc, char *argv[])
             renderer = render_perlin2;
         else if (strcmp(argv[i], "--perlin3") == 0)
             renderer = render_perlin3;
-        else if (strcmp(argv[i], "--th") == 0)
+        else if ((strcmp(argv[i], "--th") == 0)
+                 || (strcmp(argv[i], "--multi-threading") == 0))
             scene.threading = 1;
-        else if (strcmp(argv[i], "--alliasing") == 0)
-            scene.anti_alliasing = 1;
+        else if ((strcmp(argv[i], "--anti-aliasing") == 0)
+                 || (strcmp(argv[i], "--AA") == 0))
+            scene.anti_aliasing = 1;
+        else if ((strcmp(argv[i], "--fbm") == 0))
+            noise_function = fbm3d;
     }
     render_all_pixel(renderer, image, &scene);
 

@@ -26,7 +26,7 @@ struct vec3 *get_final_pix_color(struct rgb_image *image, struct scene *scene,
                                  double x, double y, pix_color_f get_pix_color)
 {
     struct vec3 *pix_color = get_pix_color(image, scene, x, y);
-    if (!scene->anti_alliasing)
+    if (!scene->anti_aliasing)
         return pix_color;
     struct vec3 *pix_color2 = get_pix_color(image, scene, x + 0.5, y);
     struct vec3 *pix_color3 = get_pix_color(image, scene, x, y + 0.5);
