@@ -93,5 +93,8 @@ void render_all_pixel(render_mode_f renderer, struct rgb_image *image,
     if (scene->threading)
         render_image_th(rend);
     else
+    {
         render_image(rend);
+        free(rend);
+    }
 }

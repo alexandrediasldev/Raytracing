@@ -1,5 +1,6 @@
 #pragma once
 #include "camera.h"
+#include "function_procedural.h"
 #include "object.h"
 #include <err.h>
 #include <errno.h>
@@ -30,6 +31,8 @@ struct scene
     double light_intensity;
     int threading;
     int anti_aliasing;
+    int abs;
+    noise_f *noise_function;
 
     struct camera camera;
 };

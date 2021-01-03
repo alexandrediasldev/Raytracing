@@ -9,6 +9,7 @@
 
 #include "bmp.h"
 #include "camera.h"
+#include "function_procedural.h"
 #include "image.h"
 #include "normal_material.h"
 #include "obj_loader.h"
@@ -139,7 +140,13 @@ int main(int argc, char *argv[])
 
     // parse options
     render_mode_f renderer = render_shaded;
-    noise_f *noise_function = fbm3d;
+    scene.noise_function = fbm3d;
+    scene.abs = 0;
+    char options[8][20]
+        = {"--fbm",    "--warping",          "--interference", "--ribbon",
+           "--galaxy", "--galaxy-distorted", "--pastel",       "--hypnotic"};
+    noise_f *noise_arr[8] = {fbm3d,  domain_warping3d, interference, ribbon,
+                             galaxy, galaxy_distorted, pastel,       hypnotic};
     for (int i = 3; i < argc; i++)
     {
         if (strcmp(argv[i], "--normals") == 0)
@@ -158,8 +165,11 @@ int main(int argc, char *argv[])
         else if ((strcmp(argv[i], "--anti-aliasing") == 0)
                  || (strcmp(argv[i], "--AA") == 0))
             scene.anti_aliasing = 1;
-        else if ((strcmp(argv[i], "--fbm") == 0))
-            noise_function = fbm3d;
+        for (int j = 0; j < 8; j++)
+            if ((strcmp(argv[i], options[i]) == 0))
+                scene.noise_function = noise_arr[i];
+            else if ((strcmp(argv[i], "--abs") == 0))
+                scene.abs = 1;
     }
     render_all_pixel(renderer, image, &scene);
 

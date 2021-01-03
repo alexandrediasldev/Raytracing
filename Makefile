@@ -1,5 +1,5 @@
 LDLIBS = -lm -lpthread
-OBJS = rt.o src/bmp.o src/image.o src/camera.o src/utils/pvect.o src/utils/alloc.o src/sphere.o src/phong.o src/utils/refcnt.o src/scene.o src/triangle.o src/obj_loader.o src/utils/evect.o src/normal_material.o src/procedural.o src/perlin.o src/render_struct.o src/render_pixel.o src/render_mode.o src/light.o src/ray_calculate.o src/pixel_color.o
+OBJS = rt.o src/bmp.o src/image.o src/camera.o src/utils/pvect.o src/utils/alloc.o src/sphere.o src/phong.o src/utils/refcnt.o src/scene.o src/triangle.o src/obj_loader.o src/utils/evect.o src/normal_material.o src/procedural.o src/perlin.o src/render_struct.o src/render_pixel.o src/render_mode.o src/light.o src/ray_calculate.o src/pixel_color.o src/function_procedural.o
 DEPS = $(OBJS:.o=.d)
 BIN = rt
 

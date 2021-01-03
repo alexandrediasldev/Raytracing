@@ -612,7 +612,7 @@ static char *my_strndup(const char *s, size_t len)
 
     return d;
 }
-
+/*
 static char *my_joinpath(const char *s, const char *t, const char delim,
                          size_t max_len)
 {
@@ -628,9 +628,9 @@ static char *my_joinpath(const char *s, const char *t, const char delim,
 
     slen = my_strnlen(s, max_len);
     tlen = my_strnlen(t, max_len);
-    len = slen + tlen + 1; /* +1 for delimiter */
+    len = slen + tlen + 1; // +1 for delimiter
 
-    d = (char *)TINYOBJ_MALLOC(len + 1); /* + '\0' */
+    d = (char *)TINYOBJ_MALLOC(len + 1); // + '\0'
     if (!d)
     {
         return NULL;
@@ -643,6 +643,7 @@ static char *my_joinpath(const char *s, const char *t, const char delim,
 
     return d;
 }
+*/
 
 char *dynamic_fgets(char **buf, size_t *size, FILE *file)
 {
