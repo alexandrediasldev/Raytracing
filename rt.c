@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 
     // initialize the frame buffer (the buffer that will store the result of the
     // rendering)
-    struct rgb_image *image = rgb_image_alloc(800, 800);
+    struct rgb_image *image = rgb_image_alloc(200, 200);
 
     // set all the pixels of the image to black
     struct rgb_pixel bg_color = {0};

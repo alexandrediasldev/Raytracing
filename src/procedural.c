@@ -3,6 +3,9 @@
 #include "utils/alloc.h"
 #include <stdlib.h>
 
+/**
+** Struct containing the options for the procedural texture
+**/
 struct procedural_info *alloc_procedural_info(const struct scene *scene,
                                               double freq, double depth)
 {
@@ -13,6 +16,10 @@ struct procedural_info *alloc_procedural_info(const struct scene *scene,
     p->noise_function = scene->noise_function;
     return p;
 }
+/**
+** return a procedural texture based only on point and discarding the normal
+** grayscale since the same noise is used
+**/
 struct vec3 procedural_texture1(struct vec3 point, struct vec3 normal,
                                 struct procedural_info p)
 {
@@ -28,7 +35,10 @@ struct vec3 procedural_texture1(struct vec3 point, struct vec3 normal,
     res.z = noise1;
     return res;
 }
-
+/**
+** return a procedural texture based on point and on the normal
+** grayscale since the same noise is used
+**/
 struct vec3 procedural_texture2(struct vec3 point, struct vec3 normal,
                                 struct procedural_info p)
 {
@@ -46,7 +56,11 @@ struct vec3 procedural_texture2(struct vec3 point, struct vec3 normal,
     res.z = noise;
     return res;
 }
-
+/**
+** return a procedural texture based on point and on the normal
+** colored image since different noises are produced for the different
+** colors
+**/
 struct vec3 procedural_texture3(struct vec3 point, struct vec3 normal,
                                 struct procedural_info p)
 {
@@ -78,6 +92,9 @@ struct vec3 procedural_texture3(struct vec3 point, struct vec3 normal,
     res.z = noise_c;
     return res;
 }
+/**
+** H and numOctaves change according to the different shadders
+**/
 struct vec3 procedural_shader1(const struct material *base_material,
                                const struct intersection *inter,
                                const struct scene *scene, const struct ray *ray)
@@ -85,7 +102,6 @@ struct vec3 procedural_shader1(const struct material *base_material,
     (void)base_material;
     (void)scene;
     (void)ray;
-    // 4 5 0
     struct procedural_info *p = alloc_procedural_info(scene, 0.8, 2.0);
     struct vec3 procedural
         = procedural_texture1(inter->point, inter->normal, *p);
@@ -99,7 +115,7 @@ struct vec3 procedural_shader2(const struct material *base_material,
     (void)base_material;
     (void)scene;
     (void)ray;
-    struct procedural_info *p = alloc_procedural_info(scene, 0.5, 1);
+    struct procedural_info *p = alloc_procedural_info(scene, 0.4, 1);
     struct vec3 procedural
         = procedural_texture2(inter->point, inter->normal, *p);
     free(p);
