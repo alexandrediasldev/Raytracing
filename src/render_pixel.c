@@ -26,7 +26,7 @@ void *render_line_th(void *rend_void)
     free(rend_void);
     pthread_exit(NULL);
 }
-void *render_line(void *rend_void)
+void render_line(void *rend_void)
 {
     struct render_struct *rend = rend_void;
     size_t maxx = rend->maxx;

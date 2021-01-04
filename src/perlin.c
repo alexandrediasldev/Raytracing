@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+/**
+** lookup table for perlin noise
+**/
 unsigned char perm[] = {
     151, 160, 137, 91,  90,  15,  131, 13,  201, 95,  96,  53,  194, 233, 7,
     225, 140, 36,  103, 30,  69,  142, 8,   99,  37,  240, 21,  10,  23,  190,
@@ -128,7 +131,9 @@ int get_hashed_value(int x, int y, int z)
 {
     return perm[x + perm[y + perm[z]]];
 }
-
+/**
+**  Get a perlin noise using 3 coordinate
+**/
 double noise3(double x, double y, double z)
 {
     int ix0, iy0, iz0, ix1, iy1, iz1;

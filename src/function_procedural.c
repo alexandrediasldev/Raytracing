@@ -84,7 +84,7 @@ double hypnotic(double x, double y, double z, double H, int numOctaves)
     return cos(tgamma(a) * 10);
 }
 
-double noise3d(double x, double y, double z, struct perlin_info p)
+double noise3d(double x, double y, double z, struct procedural_info p)
 {
     return p.noise_function(x, y, z, p.freq, p.depth);
 }

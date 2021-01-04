@@ -21,7 +21,6 @@ static void add_pix_color(struct vec3 *pix_color, struct vec3 *pix_color2)
 ** anti_alliasing off:
 ** Launch 1 ray and get the color of the pixel
 **/
-
 struct vec3 *get_final_pix_color(struct rgb_image *image, struct scene *scene,
                                  double x, double y, pix_color_f get_pix_color)
 {
@@ -31,6 +30,7 @@ struct vec3 *get_final_pix_color(struct rgb_image *image, struct scene *scene,
     struct vec3 *pix_color2 = get_pix_color(image, scene, x + 0.5, y);
     struct vec3 *pix_color3 = get_pix_color(image, scene, x, y + 0.5);
     struct vec3 *pix_color4 = get_pix_color(image, scene, x + 0.5, y + 0.5);
+    // check if the pixel color exist if not replace it with the next one
     if (!pix_color)
         pix_color = pix_color2;
     else

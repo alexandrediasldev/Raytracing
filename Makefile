@@ -21,6 +21,6 @@ release: all
 -include $(DEPS)
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(DEPS)
 
 .PHONY: all clean

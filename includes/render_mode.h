@@ -13,12 +13,12 @@ void render_shaded(struct rgb_image *image, struct scene *scene, size_t x,
                    size_t y);
 void render_normals(struct rgb_image *image, struct scene *scene, size_t x,
                     size_t y);
-void render_perlin1(struct rgb_image *image, struct scene *scene, size_t x,
-                    size_t y);
-void render_perlin2(struct rgb_image *image, struct scene *scene, size_t x,
-                    size_t y);
-void render_perlin3(struct rgb_image *image, struct scene *scene, size_t x,
-                    size_t y);
+void render_procedural1(struct rgb_image *image, struct scene *scene, size_t x,
+                        size_t y);
+void render_procedural2(struct rgb_image *image, struct scene *scene, size_t x,
+                        size_t y);
+void render_procedural3(struct rgb_image *image, struct scene *scene, size_t x,
+                        size_t y);
 
 void render_distances(struct rgb_image *image, struct scene *scene, size_t x,
                       size_t y);

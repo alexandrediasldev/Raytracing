@@ -5,6 +5,11 @@
  ** intersecting the camera ray. If an object is found,
  ** find its color.
  */
+
+/**
+**  get_pix_color_* are the sub functions for the different render mode,
+**  they return the pixel color for the corresponding mode
+**/
 static struct vec3 *get_pix_color_shadded(struct rgb_image *image,
                                           struct scene *scene, double x,
                                           double y)
@@ -44,9 +49,9 @@ static struct vec3 *get_pix_color_normals(struct rgb_image *image,
                                        scene, &ray);
     return pix_color;
 }
-static struct vec3 *get_pix_color_perlin1(struct rgb_image *image,
-                                          struct scene *scene, double x,
-                                          double y)
+static struct vec3 *get_pix_color_procedural1(struct rgb_image *image,
+                                              struct scene *scene, double x,
+                                              double y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -61,12 +66,12 @@ static struct vec3 *get_pix_color_perlin1(struct rgb_image *image,
     struct material *mat = closest_intersection.material;
     struct vec3 *pix_color = xalloc(sizeof(struct vec3));
     *pix_color
-        = perlin_shader1(mat, &closest_intersection.location, scene, &ray);
+        = procedural_shader1(mat, &closest_intersection.location, scene, &ray);
     return pix_color;
 }
-static struct vec3 *get_pix_color_perlin2(struct rgb_image *image,
-                                          struct scene *scene, double x,
-                                          double y)
+static struct vec3 *get_pix_color_procedural2(struct rgb_image *image,
+                                              struct scene *scene, double x,
+                                              double y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -81,12 +86,12 @@ static struct vec3 *get_pix_color_perlin2(struct rgb_image *image,
     struct material *mat = closest_intersection.material;
     struct vec3 *pix_color = xalloc(sizeof(struct vec3));
     *pix_color
-        = perlin_shader2(mat, &closest_intersection.location, scene, &ray);
+        = procedural_shader2(mat, &closest_intersection.location, scene, &ray);
     return pix_color;
 }
-static struct vec3 *get_pix_color_perlin3(struct rgb_image *image,
-                                          struct scene *scene, double x,
-                                          double y)
+static struct vec3 *get_pix_color_procedural3(struct rgb_image *image,
+                                              struct scene *scene, double x,
+                                              double y)
 {
     struct ray ray = image_cast_ray(image, scene, x, y);
 
@@ -101,7 +106,7 @@ static struct vec3 *get_pix_color_perlin3(struct rgb_image *image,
     struct material *mat = closest_intersection.material;
     struct vec3 *pix_color = xalloc(sizeof(struct vec3));
     *pix_color
-        = perlin_shader3(mat, &closest_intersection.location, scene, &ray);
+        = procedural_shader3(mat, &closest_intersection.location, scene, &ray);
     return pix_color;
 }
 static struct vec3 *get_pix_color_distances(struct rgb_image *image,
@@ -154,20 +159,20 @@ void render_normals(struct rgb_image *image, struct scene *scene, size_t x,
 {
     render_generic(image, scene, x, y, get_pix_color_normals);
 }
-void render_perlin1(struct rgb_image *image, struct scene *scene, size_t x,
-                    size_t y)
+void render_procedural1(struct rgb_image *image, struct scene *scene, size_t x,
+                        size_t y)
 {
-    render_generic(image, scene, x, y, get_pix_color_perlin1);
+    render_generic(image, scene, x, y, get_pix_color_procedural1);
 }
-void render_perlin2(struct rgb_image *image, struct scene *scene, size_t x,
-                    size_t y)
+void render_procedural2(struct rgb_image *image, struct scene *scene, size_t x,
+                        size_t y)
 {
-    render_generic(image, scene, x, y, get_pix_color_perlin2);
+    render_generic(image, scene, x, y, get_pix_color_procedural2);
 }
-void render_perlin3(struct rgb_image *image, struct scene *scene, size_t x,
-                    size_t y)
+void render_procedural3(struct rgb_image *image, struct scene *scene, size_t x,
+                        size_t y)
 {
-    render_generic(image, scene, x, y, get_pix_color_perlin3);
+    render_generic(image, scene, x, y, get_pix_color_procedural3);
 }
 
 void render_distances(struct rgb_image *image, struct scene *scene, size_t x,

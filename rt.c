@@ -105,12 +105,104 @@ static void build_obj_scene(struct scene *scene, double aspect_ratio)
     vec3_normalize(&scene->camera.forward);
     vec3_normalize(&scene->camera.up);
 }
+/**
+**  Print the render options and the options. Print the noise options only if
+**  usefull (--procedural[1-3])
+**/
+void print_options(struct scene *scene, char render_options[][30],
+                   char noise_options[][30], int render_index, int noise_index)
+{
+    // print options
+    printf("\tRENDER OPTIONS\n");
+    printf("render type: %s\n", render_options[render_index]);
+    if (render_index >= 3)
+    {
+        printf("noise type: %s\n", noise_options[noise_index]);
+        printf("absolute noise: ");
+        scene->abs ? printf("Yes\n") : printf("No\n");
+    }
+    printf("multi-threading: ");
+    scene->threading ? printf("Yes\n") : printf("No\n");
+    printf("anti-aliasing: ");
+    scene->anti_aliasing ? printf("Yes\n") : printf("No\n");
+}
+/**
+**  Parse the options set the scene options variable and return the render_mode
+** option
+**/
+render_mode_f parse_options(struct scene *scene, int argc, char *argv[])
+{
+    // parse options
+    render_mode_f renderer = render_shaded;
+    scene->noise_function = fbm3d;
+    scene->abs = 0;
+
+    char noise_options[8][30]
+        = {"--fbm",    "--warping",          "--interference", "--ribbon",
+           "--galaxy", "--galaxy-distorted", "--pastel",       "--hypnotic"};
+    noise_f *noise_arr[8] = {fbm3d,  domain_warping3d, interference, ribbon,
+                             galaxy, galaxy_distorted, pastel,       hypnotic};
+    int noise_index = 0;
+
+    char render_options[6][30]
+        = {"--shaded",      "--normals",     "--distances",
+           "--procedural1", "--procedural2", "--procedural3"};
+    render_mode_f render_arr[6]
+        = {render_shaded,      render_normals,     render_distances,
+           render_procedural1, render_procedural2, render_procedural3};
+    int render_index = 0;
+
+    for (int i = 3; i < argc; i++)
+    {
+        for (int j = 0; j < 6; j++)
+            if ((strcmp(argv[i], render_options[j]) == 0))
+            {
+                render_index = j;
+                renderer = render_arr[j];
+            }
+        for (int j = 0; j < 8; j++)
+        {
+            if ((strcmp(argv[i], noise_options[j]) == 0))
+            {
+                noise_index = j;
+                scene->noise_function = noise_arr[j];
+            }
+        }
+
+        if ((strcmp(argv[i], "--abs") == 0))
+            scene->abs = 1;
+        else if ((strcmp(argv[i], "--th") == 0)
+                 || (strcmp(argv[i], "--multi-threading") == 0))
+            scene->threading = 1;
+        else if ((strcmp(argv[i], "--anti-aliasing") == 0)
+                 || (strcmp(argv[i], "--AA") == 0))
+            scene->anti_aliasing = 1;
+    }
+
+    print_options(scene, render_options, noise_options, render_index,
+                  noise_index);
+    return renderer;
+}
 int main(int argc, char *argv[])
 {
     int rc;
 
     if (argc < 3)
-        errx(1, "Usage: SCENE.obj OUTPUT.bmp [--normals] [--distances]");
+    {
+        errx(1, "Usage: SCENE.obj OUTPUT.bmp [RENDER_OPTIONS] [NOISE_OPTIONS] "
+                "[OPTIONS]\n\n"
+                "RENDER_OPTIONS:\n"
+                "--shaded --normals --distances --procedural1 --procedural2 "
+                "--procedural3\n\n"
+                "NOISE_OPTIONS: (usefull only when using --procedural[1-3])\n"
+                "--fbm --warping --interference --ribbon"
+                "--galaxy --galaxy-distorted --pastel --hypnotic\n\n"
+                "OPTIONS:\n"
+                "--abs (absolute value of a noise usefull only when using\n"
+                "--procedural[1-3])\n"
+                "--multi-threading | --th\n"
+                "--anti-aliasing | --AA");
+    }
 
     struct scene scene;
     scene_init(&scene);
@@ -137,40 +229,7 @@ int main(int argc, char *argv[])
         if (load_obj(&scene, argv[1]))
             return 41;
     }
-
-    // parse options
-    render_mode_f renderer = render_shaded;
-    scene.noise_function = fbm3d;
-    scene.abs = 0;
-    char options[8][20]
-        = {"--fbm",    "--warping",          "--interference", "--ribbon",
-           "--galaxy", "--galaxy-distorted", "--pastel",       "--hypnotic"};
-    noise_f *noise_arr[8] = {fbm3d,  domain_warping3d, interference, ribbon,
-                             galaxy, galaxy_distorted, pastel,       hypnotic};
-    for (int i = 3; i < argc; i++)
-    {
-        if (strcmp(argv[i], "--normals") == 0)
-            renderer = render_normals;
-        else if (strcmp(argv[i], "--distances") == 0)
-            renderer = render_distances;
-        else if (strcmp(argv[i], "--perlin1") == 0)
-            renderer = render_perlin1;
-        else if (strcmp(argv[i], "--perlin2") == 0)
-            renderer = render_perlin2;
-        else if (strcmp(argv[i], "--perlin3") == 0)
-            renderer = render_perlin3;
-        else if ((strcmp(argv[i], "--th") == 0)
-                 || (strcmp(argv[i], "--multi-threading") == 0))
-            scene.threading = 1;
-        else if ((strcmp(argv[i], "--anti-aliasing") == 0)
-                 || (strcmp(argv[i], "--AA") == 0))
-            scene.anti_aliasing = 1;
-        for (int j = 0; j < 8; j++)
-            if ((strcmp(argv[i], options[i]) == 0))
-                scene.noise_function = noise_arr[i];
-            else if ((strcmp(argv[i], "--abs") == 0))
-                scene.abs = 1;
-    }
+    render_mode_f renderer = parse_options(&scene, argc, argv);
     render_all_pixel(renderer, image, &scene);
 
     // write the rendered image to a bmp file
