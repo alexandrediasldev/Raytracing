@@ -36,7 +36,7 @@ Render Options:
     --procedural2 (render a procedural texture based on coordinates
     and normals. The image is in grayscale)
 
-    --perlin3 (render a procedural texture based on coordinates
+    --procedural3 (render a procedural texture based on coordinates
     and normals. The image is colored)
 
 
@@ -109,11 +109,11 @@ Anti-aliasing: --anti-aliasing | --AA
 
 Procedural Textures: --procedural[1-3] and all the Noise options
 
-    Procedural textures in the form of a perlin noise and using it with
-    a function to alter the noise.
+    Procedural textures using a perlin noise with a function to alter
+    the noise.
 
     perlin.c:
-        contains the functions creating th perlin noise.
+        contains the functions creating the perlin noise.
 
     function_procedural.c:
         contains the functions altering the noise.
