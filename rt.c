@@ -113,7 +113,7 @@ void print_options(struct scene *scene, char render_options[][30],
                    char noise_options[][30], int render_index, int noise_index)
 {
     // print options
-    printf("\tRENDER OPTIONS\n");
+    printf("\tRAYTRACING OPTIONS\n");
     printf("render type: %s\n", render_options[render_index]);
     if (render_index >= 3)
     {

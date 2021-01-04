@@ -26,7 +26,7 @@ double fbm3d(double x, double y, double z, double H, int numOctaves)
 }
 /**
 ** interference is a version of fractal brownian motion
-** that produces sharp spikes on the pattern by taking the
+** that produces lines on the pattern by taking the
 ** absolute value of the noise
 **/
 double interference(double x, double y, double z, double H, int numOctaves)

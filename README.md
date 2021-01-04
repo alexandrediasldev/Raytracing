@@ -8,7 +8,9 @@ ______  _____   _____________  ___  _____ _____ _   _ _____
 
 Made by: alexandre.dias
 
-Feature:
+Usage: SCENE.obj OUTPUT.bmp [RENDER_OPTIONS] [NOISE_OPTIONS] [OPTIONS]
+
+Features:
 
     Multi-threading
 
@@ -17,23 +19,64 @@ Feature:
     Procedural Textures
 
 
-Options:
+Render Options:
+
+
+    --shaded (render the object with it's material colors)
 
     --normals (render the normals of the object)
 
-    --distances (render the image in grayscale based on the
-    distances to the camera)
+    --distances (render the image in grayscale based on the distances to the
+    camera)
 
-    --perlin1 (render the object using a perlin noise taking in consideration
-    only the position of a pixel)
+    --procedural1 (render a procedural texture based only on coordinates
+    and discarding the normals. The image is in grayscale)
 
-    --perlin2 (render the object using an absolute perlin noise)
 
-    --perlin3 (render the object using an absolute perlin noise for each color)
+    --procedural2 (render a procedural texture based on coordinates
+    and normals. The image is in grayscale)
+
+    --perlin3 (render a procedural texture based on coordinates
+    and normals. The image is colored)
+
+
+    default value: --shaded
+
+Noise Options: (usefull only when using --procedural[1-3])
+
+    Classic : (well known fonctions)
+
+    --fbm (fractal brownian motion)
+
+    --warping (distorted fractal brownina motion)
+
+    --interference (fractal brownian motion with absolute value
+    to produce lines on the pattern)
+
+    Custom : (made be me using fbm and warping)
+
+    --ribbon
+
+    --galaxy
+
+    --galaxy-distorted
+
+    --pastel
+
+    --hypnotic
+
+    default value: --fbm
+
+Options:
 
     --th | --multi-threading (Enable multi threading)
+    default value: off
 
     --anti-aliasing | --AA (Enable anti aliasing)
+    default value: off
+
+    --abs
+    default value: off
 
 Multi-threading: --th | --multi-threading
 
@@ -64,8 +107,20 @@ Anti-aliasing: --anti-aliasing | --AA
         normals, perlin ...)
 
 
-Procedural Textures: --perlin1 --perlin2 --perlin3
+Procedural Textures: --procedural[1-3] and all the Noise options
 
     Procedural textures in the form of a perlin noise and using it with
-    Fractal Bronian motions (fbm)
+    a function to alter the noise.
+
+    perlin.c:
+        contains the functions creating th perlin noise.
+
+    function_procedural.c:
+        contains the functions altering the noise.
+
+    procedural.c:
+        contains the functions for the different procedural
+        patterns (--procedural[1-3])
+
+
 
