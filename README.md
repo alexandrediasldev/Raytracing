@@ -7,11 +7,11 @@ ______  _____   _____________  ___  _____ _____ _   _ _____
 \_| \_\_| |_/\_/   \_/ \_| \_\_| |_/\____/\___/\_| \_/\____/
 ```
 
-Made by: alexandre.dias
+**Made by:** alexandre.dias
 
-Usage: SCENE.obj OUTPUT.bmp [RENDER_OPTIONS] [NOISE_OPTIONS] [OPTIONS]
+**Usage:** SCENE.obj OUTPUT.bmp [RENDER_OPTIONS] [NOISE_OPTIONS] [OPTIONS]
 
-Features:
+## Features:
 
     Multi-threading
 
@@ -20,7 +20,7 @@ Features:
     Procedural Textures
 
 
-Render Options:
+## Render Options:
 
 
     --shaded (render the object with it's material colors)
@@ -43,7 +43,7 @@ Render Options:
 
     default value: --shaded
 
-Noise Options: (usefull only when using --procedural[1-3])
+## Noise Options: (usefull only when using --procedural[1-3])
 
     Classic : (well known fonctions)
 
@@ -68,7 +68,7 @@ Noise Options: (usefull only when using --procedural[1-3])
 
     default value: --fbm
 
-Options:
+## Options:
 
     --th | --multi-threading (Enable multi threading)
     default value: off
@@ -79,7 +79,7 @@ Options:
     --abs
     default value: off
 
-Multi-threading: --th | --multi-threading
+## Multi-threading: --th | --multi-threading
 
     When activated, instead of rendering pixel per pixel, send a line to be
     rendered with pthread_create, once the maximum number of thread chosen
@@ -94,7 +94,7 @@ Multi-threading: --th | --multi-threading
         contains the definition of the struct passed to
         pthread_create
 
-Anti-aliasing: --anti-aliasing | --AA
+## Anti-aliasing: --anti-aliasing | --AA
 
     When activated, instead of sending only one ray per pixel, 4 rays are sent
     The color is averaged from those 4 rays
@@ -108,7 +108,7 @@ Anti-aliasing: --anti-aliasing | --AA
         normals, perlin ...)
 
 
-Procedural Textures: --procedural[1-3] and all the Noise options
+## Procedural Textures: --procedural[1-3] and all the Noise options
 
     Procedural textures using a perlin noise with a function to alter
     the noise.
@@ -123,5 +123,15 @@ Procedural Textures: --procedural[1-3] and all the Noise options
         contains the functions for the different procedural
         patterns (--procedural[1-3])
 
+## Sample image:
 
+More sample images can be found in image/
+### Hypnotic
+![Hypnotic](image/hypnotic1.png)
+### Galaxy
+![Galaxy](image/galaxy2.png)
+### Ribbon
+![Ribbon](image/ribbon2.png)
+### Pastel
+![Pastel](image/pastel1.png)
 
